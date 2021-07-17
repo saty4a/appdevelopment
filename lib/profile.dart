@@ -1,3 +1,6 @@
+import 'package:ecommerce/auth.dart';
+import 'package:ecommerce/login.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ecommerce/register.dart';
@@ -9,6 +12,7 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  String? user = FirebaseAuth.instance.currentUser!.email;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,33 +58,44 @@ class _ProfileState extends State<Profile> {
                  Container(
                    margin: EdgeInsets.only(top: 20.0,bottom: 0.0),
                    //color: Colors.blue,
-                   child: Text("Not logged in",style: TextStyle(
+                   child: Text("logged in",style: TextStyle(
                      fontWeight: FontWeight.bold,
                      fontSize: 20.0,
                      color: Colors.black,
                    ),),
                  //)
                  ),
+                 Container(
+                   margin: EdgeInsets.only(top: 100.0),
+                   //color: Colors.blue,
+                   child: Text("Email: $user",style: TextStyle(
+                     fontWeight: FontWeight.bold,
+                     fontSize: 20.0,
+                     color: Colors.black,
+                   ),),
+                 ),
                 /*Expanded(
-                  child:*/ Container(
-                    //height: 0,
-
+                  child:*/
+                 Expanded(child: Center(
+                   child:Column( children:[
+                 Container(
                     child: ElevatedButton(
-                    onPressed: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=>Registerpro()),);
-                    },
-
+                      onPressed: (){
+                        AuthClass().signOut();
+                        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>Login()),
+                                (route) => false);
+                      },
                     child: Container(
                       //alignment: Alignment.center,
                       color: Colors.blue[800],
                       width: double.infinity,
                       child:
-                    Text("Login",style: TextStyle(
+                    Text("Log out",style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                     fontSize: 18.0,
                   ),),
-                      padding: EdgeInsets.only(left: 120.0),
+                      padding: EdgeInsets.only(left: 110.0),
 
                     ),
                       style: ElevatedButton.styleFrom(
@@ -90,25 +105,15 @@ class _ProfileState extends State<Profile> {
                         ),
                   ),
                     ),
-                    padding: EdgeInsets.symmetric(horizontal: 50.0,vertical: 160),
+                    padding: EdgeInsets.symmetric(horizontal: 50.0),
                   ),
+                ],
+                   ),
+                 ),
+                 ),
                 //),
                ],
                 ),
-                //child:
-                 /*Row(
-                 //Column(
-                   children: [
-                     //Padding(padding: const EdgeInsets.only(),
-                     // child:
-                      Text("Not logged in",style: TextStyle(
-                      fontWeight: FontWeight.bold,
-              ),
-              ),
-
-                   ],
-                 ),*/
-                //),
             ),
             ),
               ),

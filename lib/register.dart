@@ -1,3 +1,6 @@
+import 'package:ecommerce/auth.dart';
+import 'package:ecommerce/homepage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -12,10 +15,19 @@ class Registerpro extends StatefulWidget {
 }
 
 class _RegisterproState extends State<Registerpro> {
+  GlobalKey<FormState> _form = GlobalKey<FormState>();
+  TextEditingController _email = TextEditingController();
+  TextEditingController _password = TextEditingController();
+  TextEditingController _confirmPass = TextEditingController();
+
+  bool isloading = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body:
+      body: isloading == false
+          ? Expanded(child: Form(
+      key:_form,
+      child:
       Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -77,14 +89,15 @@ class _RegisterproState extends State<Registerpro> {
                       child: TextField(
                         keyboardType: TextInputType.emailAddress,
                         style: TextStyle(color: Colors.black),
+                        controller: _email,
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.only(top: 14.0),
                           /*prefixIcon: Icon(
                             Icons.email,
                             color: Colors.black,
-                          ),
-                          hintText: "Enter your Email",*/
+                          ),*/
+                          hintText: "Enter your Email",
                         ),
                       ),
                     ),
@@ -107,9 +120,15 @@ class _RegisterproState extends State<Registerpro> {
                         border: Border.all(color: Colors.black),
                         borderRadius: BorderRadius.all( Radius.circular(10.0)),
                       ),
-                      child: TextField(
+                      child: TextFormField(
                         obscureText: true,
                         style: TextStyle(color: Colors.black),
+                        controller: _password,
+                        validator:(val){
+                          if(val!.isEmpty)
+                            return "Empty";
+                          return null;
+                        },
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.only(top: 14.0),
@@ -139,9 +158,17 @@ class _RegisterproState extends State<Registerpro> {
                         border: Border.all(color: Colors.black),
                         borderRadius: BorderRadius.all( Radius.circular(10.0)),
                       ),
-                      child: TextField(
+                      child: TextFormField(
                         obscureText: true,
                         style: TextStyle(color: Colors.black),
+                        controller: _confirmPass,
+                        validator:(val){
+                          if(val!.isEmpty)
+                            return "Empty";/*
+                          if(val != _password.text)
+                            return "Not Match";*/
+                              return null;
+                        },
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.only(top: 14.0),
@@ -158,7 +185,39 @@ class _RegisterproState extends State<Registerpro> {
                           //height: 0,
                         child: ElevatedButton(
                           onPressed: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>Login()),);
+                            setState(() {
+                              isloading = true;
+                          });
+                          if (_password == _confirmPass) {
+                            AuthClass()
+                              .createAccount(
+                                email: _email.text.trim(),
+                                password: _password.text.trim())
+                                  .then((value) {
+                                if (value == "Account created") {
+                                  setState(() {
+                                    isloading = false;
+                                  });
+                                  Navigator.pushAndRemoveUntil(
+                                      context,
+                                        MaterialPageRoute(
+                                           builder: (context) => Homepage()),
+                                                (route) => false);
+                                    } else {
+                                      setState(() {
+                                        isloading = false;
+                                      });
+                                    }
+                                  });
+                                }
+                                else{
+                                  Navigator.pushAndRemoveUntil(
+                                      context,
+                                        MaterialPageRoute(
+                                          builder: (context) => Registerpro()),
+                                            (route) => false);
+                                  }
+                            //Navigator.push(context, MaterialPageRoute(builder: (context)=>Login()),);
                           },
                           child: Container(
                             //alignment: Alignment.center,
@@ -181,6 +240,49 @@ class _RegisterproState extends State<Registerpro> {
                         ),
                         padding: EdgeInsets.only(left: 20.0,right:20.0,top: 40,bottom: 0),
                       ),
+                      //Google sign in
+                      Container(child:
+                      ElevatedButton(
+                        onPressed: () async{
+                          setState(() {
+                            isloading = true;
+                          });
+                          await AuthClass()
+                              //.signWithGoogle()
+                                .signInWithGoogle()
+                                .then((UserCredential value) {
+                              final displayName = value.user!.email;
+
+                              print(displayName);
+
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                  MaterialPageRoute(
+                                    builder: (context) => Homepage()),
+                                        (route) => false);
+                                  });
+                      //Navigator.push(context, MaterialPageRoute(builder: (context)=>Homepage()),);
+                            },
+                      child: Container(
+                          //alignment: Alignment.center,
+                            color: Colors.blue,
+                            width: double.infinity,
+                            child:
+                            Text("Sign in with google",style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              fontSize: 18.0,
+                            ),),
+                            padding: EdgeInsets.only(left: 85.0),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20), // <-- Radius
+                            ),
+                          ),
+                        ),
+                        margin: EdgeInsets.only(left: 20,right: 20),
+                        ),
                     Row(
                       //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children:[
@@ -192,18 +294,23 @@ class _RegisterproState extends State<Registerpro> {
                     ),
                      Padding(padding: EdgeInsets.only(right: 5.0),),
                     Center(child: Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Login()),
+                          );
+                        },
                         child:new RichText(text:  TextSpan(
                        text: "here",
                        style: new TextStyle(color: Colors.blue),
-                       recognizer: new TapGestureRecognizer()
-                         ..onTap=(){
-                           Navigator.push(context, MaterialPageRoute(builder: (context)=>Login()),);
-                         },
                        //textDirection: TextDirection.ltr,
                         ),
                         ),
                     ),
                       ),
+                    ),
                       ],
                     ),
                     ],
@@ -217,6 +324,11 @@ class _RegisterproState extends State<Registerpro> {
             borderRadius: new BorderRadius.circular(10.0),),
         ),
         padding: EdgeInsets.only(top: 120.0,bottom: 50.0,right: 10.0,left: 10.0),
+      ),
+    ),
+    )
+          : Center(
+        child: CircularProgressIndicator(),
       ),
     );
   }

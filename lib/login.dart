@@ -1,7 +1,11 @@
+import 'package:ecommerce/auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:ecommerce/home.dart';
 import 'package:ecommerce/homepage.dart';
+import 'package:ecommerce/register.dart';
+
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
 
@@ -10,11 +14,16 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  //String? email = FirebaseAuth.instance.currentUser!.email;
+  TextEditingController _email = TextEditingController();
+  TextEditingController _password = TextEditingController();
+
+  bool isloading = false;
   @override
   Widget build(BuildContext context) {
     return
       Scaffold(
-        body:
+        body: isloading == false ?
         Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -27,7 +36,9 @@ class _LoginState extends State<Login> {
                 Color(0xff5B16D0),],
             ),
           ),
-          child: Card(
+          child:
+
+          Card(
             clipBehavior: Clip.antiAlias,
             color: Colors.cyanAccent,
             child: Container(
@@ -76,14 +87,15 @@ class _LoginState extends State<Login> {
                         child: TextField(
                           keyboardType: TextInputType.emailAddress,
                           style: TextStyle(color: Colors.black),
+                          controller: _email,
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.only(top: 14.0),
                             /*prefixIcon: Icon(
                             Icons.email,
                             color: Colors.black,
-                          ),
-                          hintText: "Enter your Email",*/
+                          ),*/
+                            hintText: "Enter your Email",
                           ),
                         ),
                       ),
@@ -109,6 +121,7 @@ class _LoginState extends State<Login> {
                         child: TextField(
                           obscureText: true,
                           style: TextStyle(color: Colors.black),
+                          controller: _password,
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.only(top: 14.0),
@@ -116,17 +129,32 @@ class _LoginState extends State<Login> {
                             Icons.lock,
                             color: Colors.black,
                           ),*/
-                            //hintText: "Enter your Password",
+                            hintText: "Enter your Password",
                           ),
                         ),
                       ),
-                      //button
-                      //child:
                       Padding(
                         //height: 0,
                         child: ElevatedButton(
                           onPressed: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>Homepage()),);
+                            setState(() {
+                              isloading = true;
+                            });
+                            AuthClass().signIN(email: _email.text.trim(),
+                                password: _password.text.trim()).then((value){
+                              if(value=="Welcome"){
+                                setState(() {
+                                  isloading = false;
+                                });
+                                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>Homepage()), (route) => false);
+                              }else{
+                                setState(() {
+                                  isloading = false;
+                                });
+                                //ScaffoldMessenger.of(context).showSnackBar(snackBar(content: Text(value)));
+                              }
+                            });
+                            //Navigator.push(context, MaterialPageRoute(builder: (context)=>Homepage()),);
                           },
                           child: Container(
                             //alignment: Alignment.center,
@@ -147,33 +175,74 @@ class _LoginState extends State<Login> {
                             ),
                           ),
                         ),
-                        padding: EdgeInsets.only(left: 20.0,right:20.0,top: 40,bottom: 0),
+                        padding: EdgeInsets.only(left: 20.0,right:20.0,top: 40),
                       ),
-                      //),*/
+                      //google sign in
+                      Container(child:
+                      ElevatedButton(
+                        onPressed: (){
+                          setState(() {
+                            isloading = true;
+                          });
+                          AuthClass()
+                          //.signWithGoogle()
+                              .signInWithGoogle()
+                              .then((UserCredential value) {
+                            final displayName = value.user!.email;
+
+                            print(displayName);
+
+                            Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Homepage()),
+                                    (route) => false);
+                          });
+                          //Navigator.push(context, MaterialPageRoute(builder: (context)=>Homepage()),);
+                        },
+                        child: Container(
+                          //alignment: Alignment.center,
+                          color: Colors.blue,
+                          width: double.infinity,
+                          child:
+                          Text("Sign in with google",style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontSize: 18.0,
+                          ),),
+                          padding: EdgeInsets.only(left: 85.0),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20), // <-- Radius
+                          ),
+                        ),
+                      ),
+                        margin: EdgeInsets.only(left: 20,right: 20),
+                      ),
                       Row(
                         //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children:[
                           //Container(child:
                           Container(
-                            margin: EdgeInsets.only(left: 80.0),
-                            child: Text("Have an account? Create one"),
+                            margin: EdgeInsets.only(left: 70.0),
+                            child: Text("Don't have an account? Create one"),
                             //padding: EdgeInsets.only(left: 10.0),
                           ),
                           Padding(padding: EdgeInsets.only(right: 5.0),),
-                          Center(child: Expanded(
-                            child:new RichText(text:  TextSpan(
+                          Center(child: GestureDetector(
+                            onTap:(){
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=>Registerpro()),);
+                            },
+                            child: RichText(text:  TextSpan(
                               text: "here",
                               style: new TextStyle(color: Colors.blue),
-                              /*recognizer: new TapGestureRecognizer()
-                                ..onTap=(){},*/
-                              //textDirection: TextDirection.ltr,
                             ),
                             ),
                           ),
                           ),
                         ],
                       ),
-
                     ],
                   )
                 ],
@@ -185,7 +254,8 @@ class _LoginState extends State<Login> {
               borderRadius: new BorderRadius.circular(10.0),),
           ),
           padding: EdgeInsets.only(top: 120.0,bottom: 50.0,right: 10.0,left: 10.0),
-        ),
+        ):
+        Center(child: CircularProgressIndicator(),),
       );
   }
 }
