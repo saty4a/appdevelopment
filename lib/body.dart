@@ -2,6 +2,9 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ecommerce/homepage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:ecommerce/register.dart';
+import 'package:ecommerce/login.dart';
 
 class Body extends StatefulWidget {
   //const Body({ Key? key }) : super(key: key);
@@ -11,8 +14,16 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
+  FirebaseAuth auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
+    Future.delayed(const Duration(seconds: 2), (){
+      if(auth.currentUser==null){
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>Login()), (route) => false);
+      }else{
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>Homepage()), (route) => false);
+      }
+    });
     return Center(
      child: Container(
       decoration: BoxDecoration(
