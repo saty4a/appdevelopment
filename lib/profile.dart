@@ -19,7 +19,7 @@ class _ProfileState extends State<Profile> {
           appBar: AppBar(
             title:
             Padding(
-              padding: EdgeInsets.only(left: 95.0),
+              padding: EdgeInsets.only(left: 163.0),
             child: Text("Profile",style: TextStyle(
               fontWeight: FontWeight.w700,
               fontSize: 20.0,

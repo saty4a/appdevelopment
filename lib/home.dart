@@ -1,3 +1,4 @@
+import 'package:ecommerce/cartdetails.dart';
 import 'package:flutter/material.dart';
 //import 'package:ecommerce/gridview.dart';
 import 'package:ecommerce/productdetails.dart';
@@ -19,7 +20,7 @@ class _HomeState extends State<Home> {
         title: //Icon(Icons.home),
             Container(
           child: Padding(
-            padding: EdgeInsets.only(left: 70.0),
+            padding: EdgeInsets.only(left: 120.0),
             child: Row(
               children: <Widget>[
                 Text(
@@ -114,11 +115,16 @@ class _ConState extends State<Con> {
       padding: EdgeInsets.only(left: 80.0),
       child: IconButton(
         icon: Icon(
-          Icons.shopping_cart,
+          Icons.shopping_cart_outlined,
           color: Colors.white,
           size: 30.0,
         ),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Cartdetails()),
+              );
+        },
       ),
     ));
   }
@@ -315,7 +321,7 @@ class _productdetailsState extends State<productdetails> {
                   //height: 0,
                   child: ElevatedButton(
                     onPressed: () {
-                      //Navigator.push(context, MaterialPageRoute(builder: (context)=>Homepage()),);
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>Cartdetails()),);
                     },
                     child: Container(
                       //alignment: Alignment.center,

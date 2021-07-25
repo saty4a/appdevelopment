@@ -26,6 +26,7 @@ class _LoginState extends State<Login> {
       Scaffold(
         body: isloading == false ?
         Container(
+          height:double.infinity,
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
@@ -37,13 +38,14 @@ class _LoginState extends State<Login> {
                 Color(0xff5B16D0),],
             ),
           ),
+          padding: EdgeInsets.only(
+                  top: 50.0, bottom: 50.0, right: 10.0, left: 10.0),
           child:
-
           Card(
             clipBehavior: Clip.antiAlias,
             color: Colors.cyanAccent,
             child: Container(
-              child: Column(
+              child:SingleChildScrollView(child: Column(
                 children: [
                   Container(child: Center(
                     child: Text("SkillKart",style: TextStyle(
@@ -248,13 +250,13 @@ class _LoginState extends State<Login> {
                   )
                 ],
               ),
+              ),
             ),
             elevation: 2.0,
             margin: EdgeInsets.all(2.0),
             shape: new RoundedRectangleBorder(
               borderRadius: new BorderRadius.circular(10.0),),
           ),
-          padding: EdgeInsets.only(top: 120.0,bottom: 50.0,right: 10.0,left: 10.0),
         ):
         Center(child: CircularProgressIndicator(),),
       );
