@@ -1,7 +1,7 @@
+import 'package:ecommerce/screens/home.dart';
+import 'package:ecommerce/screens/orderscreen.dart';
+import 'package:ecommerce/screens/profile.dart';
 import 'package:flutter/material.dart';
-import 'package:ecommerce/historypage.dart';
-import 'package:ecommerce/home.dart';
-import 'package:ecommerce/profile.dart';
 
 class Homepage extends StatefulWidget {
   //const homepage({Key? key}) : super(key: key);
@@ -21,7 +21,7 @@ class _HomepageState extends State<Homepage> {
   int _currentIndex=0;
   final tabs = [
     Home(),
-    History(),
+    OrdersScreen(),
     Profile(),
   ];
 

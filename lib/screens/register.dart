@@ -1,11 +1,13 @@
-import 'package:ecommerce/auth.dart';
-import 'package:ecommerce/homepage.dart';
+import 'package:ecommerce/screens/homepage.dart';
+import 'package:ecommerce/screens/login.dart';
+import 'package:ecommerce/services/api.dart';
+import 'package:ecommerce/services/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'package:ecommerce/login.dart';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class Registerpro extends StatefulWidget {
@@ -282,7 +284,13 @@ class _RegisterproState extends State<Registerpro> {
                               ),
                               //Google sign in
                               Container(
-                                child: ElevatedButton(
+                                child: 
+                                SignInButton(
+                                Buttons.Google,
+                                shape:RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.circular(20), // <-- Radius
+                                  ),
                                   onPressed: () async {
                                     setState(() {
                                       isloading = true;
@@ -290,7 +298,7 @@ class _RegisterproState extends State<Registerpro> {
                                     await AuthClass()
                                         //.signWithGoogle()
                                         .signInWithGoogle()
-                                        .then((UserCredential value) {
+                                        .then((UserCredential value) async {
                                       final displayName = value.user!.email;
 
                                       print(displayName);
@@ -300,10 +308,11 @@ class _RegisterproState extends State<Registerpro> {
                                           MaterialPageRoute(
                                               builder: (context) => Homepage()),
                                           (route) => false);
+                                          await Api.loginUser(value.user!);
                                     });
                                     //Navigator.push(context, MaterialPageRoute(builder: (context)=>Homepage()),);
                                   },
-                                  child: Container(
+                                  /* child: Container(
                                     //alignment: Alignment.center,
                                     color: Colors.blue,
                                     width: double.infinity,
@@ -322,7 +331,8 @@ class _RegisterproState extends State<Registerpro> {
                                       borderRadius: BorderRadius.circular(
                                           20), // <-- Radius
                                     ),
-                                  ),
+                                  ), */
+                                padding: EdgeInsets.symmetric(horizontal: 53),
                                 ),
                                 margin: EdgeInsets.only(left: 20, right: 20),
                               ),

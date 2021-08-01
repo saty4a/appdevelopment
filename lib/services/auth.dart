@@ -1,17 +1,20 @@
+import 'package:ecommerce/services/api.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/material.dart';
-import 'homepage.dart';
 
-class AuthClass{
-
+class AuthClass {
   FirebaseAuth auth = FirebaseAuth.instance;
   //Create Account
-  Future<String> createAccount({ required String email, required String password}) async {
+  Future<String> createAccount(
+      {required String email, required String password}) async {
     try {
-      var userCredential = await auth.createUserWithEmailAndPassword(
-          email: email, password: password);
+      auth
+          .createUserWithEmailAndPassword(email: email, password: password)
+          .then((value) async {
+        await Api.loginUser(value.user!);
+      });
       return "Account created";
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -26,9 +29,14 @@ class AuthClass{
   }
 
   //Sign in user
-  Future<String> signIN({required String email, required String password}) async {
+  Future<String> signIN(
+      {required String email, required String password}) async {
     try {
-      await auth.signInWithEmailAndPassword(email: email, password: password);
+      await auth
+          .signInWithEmailAndPassword(email: email, password: password)
+          .then((value) {
+        Api.loginUser(value.user!);
+      });
       return "Welcome";
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -39,6 +47,7 @@ class AuthClass{
     }
     return "null";
   }
+
   //SignOut
   void signOut() {
     auth.signOut();
@@ -49,7 +58,8 @@ class AuthClass{
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
     // Obtain the auth details from the request
-    final GoogleSignInAuthentication googleAuth = await googleUser!.authentication;
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser!.authentication;
 
     // Create a new credential
     final credential = GoogleAuthProvider.credential(

@@ -1,10 +1,10 @@
 import 'dart:ui';
+import 'package:ecommerce/screens/homepage.dart';
+import 'package:ecommerce/screens/login.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:ecommerce/homepage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:ecommerce/register.dart';
-import 'package:ecommerce/login.dart';
+
 
 class Body extends StatefulWidget {
   //const Body({ Key? key }) : super(key: key);
@@ -47,21 +47,7 @@ class _BodyState extends State<Body> {
          ),
          margin: EdgeInsets.only(top: 20.0),
          ),
-         /*SizedBox(width:10.0),
-         Padding(padding: EdgeInsets.symmetric(horizontal: 5.0),
-          child:
-          Container( alignment: Alignment.centerRight,
-          child: Icon(
-           Icons.arrow_forward,
-           color: Colors.white,
-           size: 30.0,
-         ),
-          ),
-         ),*/
           Container(
-            //heightFactor: double.infinity,
-            //width: double.infinity,
-            //height: double.infinity,
             alignment: Alignment.center,
             //margin:  EdgeInsets.symmetric(vertical: 220),
               child: Padding(

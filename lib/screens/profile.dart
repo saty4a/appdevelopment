@@ -1,9 +1,9 @@
-import 'package:ecommerce/auth.dart';
-import 'package:ecommerce/login.dart';
+
+import 'package:ecommerce/screens/login.dart';
+import 'package:ecommerce/services/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:ecommerce/register.dart';
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
 
